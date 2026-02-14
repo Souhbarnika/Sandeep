@@ -157,21 +157,38 @@ pointer-events:none;
 }
 
 .music-player{
-background:rgba(214,51,132,0.1);
+background:linear-gradient(135deg, rgba(214,51,132,0.15) 0%, rgba(255,182,193,0.2) 100%);
 border-radius:15px;
-padding:15px;
-margin:20px 0;
+padding:20px;
+margin:20px auto;
 display:flex;
 align-items:center;
-gap:10px;
+gap:15px;
 justify-content:center;
 flex-wrap:wrap;
+max-width:700px;
+border:2px solid rgba(214,51,132,0.3);
+box-shadow:0 5px 15px rgba(214,51,132,0.1);
+animation:fadeInDown 0.8s ease-out;
+}
+
+.music-player label{
+font-size:18px;
+font-weight:bold;
+color:#d63384;
+white-space:nowrap;
 }
 
 .music-player audio{
 width:100%;
-max-width:400px;
+max-width:350px;
 margin:0;
+height:40px;
+border-radius:10px;
+}
+
+.music-player audio::-webkit-media-controls-panel{
+background-color:#d63384;
 }
 
 .slideshow-container{
@@ -535,35 +552,6 @@ Your browser does not support the audio element.
 Some feelings don't appear suddenly — they grow quietly until they begin to feel like home.
 </p>
 
-<h2>To Sandeepkumar</h2>
-
-<div class="letter">
-
-Sandeepkumar,
-
-The past few days were not easy for us. In my overwhelm I pushed you away, and I even said things about ending what we have. But my heart never truly meant it. I am sorry for hurting you.
-
-What we share didn't happen suddenly. It was built slowly — through years of friendship, patience, understanding, and all the little conversations only we know.
-
-You have seen every version of me — the happy one, the quiet one, the confused one — and you still stayed. That means more to me than I can properly express.
-
-Whenever everything inside me feels heavy and messy, I somehow find my way back to you. Talking to you steadies me and makes me feel like myself again.
-
-Your presence calms me in a way nothing else does. No matter how far my thoughts wander, I return to you… because with you I feel safe, understood, and at peace.
-
-I love you deeply, and I truly value us.
-
-You are summer, full of light,
-I was winter, cold as night.
-You were the warmth I longed to feel,
-While my heart stayed frozen, hard as steel.
-You stood by me, patient and kind,
-Melting the walls I tried to hide.
-Now I soften where once I froze —
-In your warmth, my heart glows.
-
-</div>
-
 <div class="clickable-hearts">
 <span class="heart" onclick="showMessage(event, 'I miss you')">💕</span>
 <span class="heart" onclick="showMessage(event, 'Forever & always')">💖</span>
@@ -572,20 +560,10 @@ In your warmth, my heart glows.
 <span class="heart" onclick="showMessage(event, 'Always here')">💝</span>
 </div>
 
-<br>
-
-<button onclick="yes()">I'm here ❤️</button>
-<button onclick="no()">I need a moment…</button>
-
-<div id="success">
-Thank you for staying, for understanding me, and for being patient even when I struggled to understand myself.
-I don't promise a perfect love… but I promise a real one, where I choose you every day.
-</div>
-
 </section>
 
 <section class="card">
-<h2>Our Memories 📸</h2>
+<h2>📸 Our Memories</h2>
 
 <div class="slideshow-container">
 <div class="slide active">
@@ -623,7 +601,7 @@ I don't promise a perfect love… but I promise a real one, where I choose you e
 </section>
 
 <section class="card">
-<h2>A Letter From My Heart ❤️</h2>
+<h2>❤️ A Letter From My Heart</h2>
 
 <div class="letter-section">
 <div class="letter-header">To Sandeepkumar,</div>
@@ -655,6 +633,14 @@ In your warmth, my heart glows.
 
 <div class="letter-signature">Forever Yours,
 Souhbarnika 💕</div>
+</div>
+</section>
+
+<section class="card">
+<div id="success">
+<h2 style="color:#d63384; margin-top:0;">🎉 Thank You! 🎉</h2>
+Thank you for staying, for understanding me, and for being patient even when I struggled to understand myself.
+I don't promise a perfect love… but I promise a real one, where I choose you every day.
 </div>
 </section>
 
