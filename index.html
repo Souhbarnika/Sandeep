@@ -13,6 +13,19 @@
 	--muted: #666;
 }
 
+body {
+	background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 25%, #ec4899 50%, #f472b6 75%, #7c3aed 100%);
+	background-size: 400% 400%;
+	animation: gradientShift 15s ease infinite;
+	min-height: 100vh;
+}
+
+@keyframes gradientShift {
+	0% { background-position: 0% 50%; }
+	50% { background-position: 100% 50%; }
+	100% { background-position: 0% 50%; }
+}
+
 .music-pill{
 	display:flex;
 	justify-content:center;
@@ -75,14 +88,45 @@ white-space:pre-line;
 font-size:17px;
 }
 
-/* background tiny hearts */
-.bg-hearts{ position:fixed; inset:0; pointer-events:none; z-index:0; }
-.bg-hearts .bg-heart{ position:absolute; width:12px; height:12px; transform:rotate(45deg); border-radius:3px; opacity:0.12; }
-.bg-heart::before, .bg-heart::after{ content:''; position:absolute; background:inherit; border-radius:50%; }
-.bg-heart::before{ width:12px; height:12px; top:-6px; left:0; }
-.bg-heart::after{ width:12px; height:12px; left:6px; top:0; }
-.bg-heart.float{ animation:floatAway linear infinite; }
-@keyframes floatAway{ from{ transform:translateY(0) rotate(45deg); opacity:0.12 } to{ transform:translateY(-120vh) rotate(45deg); opacity:0 } }
+/* background hearts — larger, colored, floating */
+.bg-hearts {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 1;
+	overflow: hidden;
+}
+
+.bg-hearts .bg-heart {
+	position: absolute;
+	font-size: 2.5rem;
+	opacity: 0.6;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+}
+
+.bg-heart {
+	animation: floatUp var(--duration, 8s) linear infinite;
+}
+
+@keyframes floatUp {
+	0% {
+		transform: translateY(100vh) rotate(0deg);
+		opacity: 0;
+	}
+	10% {
+		opacity: 0.6;
+	}
+	90% {
+		opacity: 0.6;
+	}
+	100% {
+		transform: translateY(-100vh) rotate(360deg);
+		opacity: 0;
+	}
+}
 
 .card{
 	background:white;
@@ -868,34 +912,31 @@ function no(){
 alert("Take your time. I will still be here.");
 }
 
-// Background hearts generator
-function generateBackgroundHearts(count = 24){
+// Background hearts generator — larger, more visible, varied animation durations
+function generateBackgroundHearts(count = 50){
 	const container = document.querySelector('.bg-hearts');
 	if(!container) return;
-	const colors = [getComputedStyle(document.documentElement).getPropertyValue('--primary').trim(), getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim(), getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()];
+	const heartEmojis = ['❤️', '💕', '💖', '💗', '💝', '💞', '💓'];
+	const colors = ['#ff79c6', '#ff1493', '#ff69b4', '#ffb6c1', '#ff7ab2', '#d63384', '#ff69b4'];
 	for(let i=0;i<count;i++){
 		const el = document.createElement('div');
 		el.className = 'bg-heart';
-		const size = 8 + Math.floor(Math.random()*20);
-		el.style.width = `${size}px`;
-		el.style.height = `${size}px`;
-		const color = colors[Math.floor(Math.random()*colors.length)] || '#ff7ab2';
-		el.style.background = color;
+		el.textContent = heartEmojis[Math.floor(Math.random()*heartEmojis.length)];
+		const color = colors[Math.floor(Math.random()*colors.length)];
+		el.style.color = color;
 		el.style.left = Math.random()*100 + 'vw';
-		el.style.top = Math.random()*120 + 'vh';
-		el.style.opacity = (0.06 + Math.random()*0.12).toString();
-		el.style.transform = 'rotate(45deg)';
-		el.style.transition = 'transform 1s linear';
-		const dur = 10 + Math.random()*30;
-		el.style.animationDuration = `${dur}s`;
-		el.classList.add('float');
+		el.style.top = (Math.random()*50 + 100) + 'vh';
+		const duration = 8 + Math.floor(Math.random()*12);
+		el.style.setProperty('--duration', duration + 's');
+		const delay = Math.random() * 5;
+		el.style.animationDelay = delay + 's';
 		container.appendChild(el);
 	}
 }
 
 // Music heart control
 document.addEventListener('DOMContentLoaded', ()=>{
-	generateBackgroundHearts(28);
+	generateBackgroundHearts(60);
 				const btn = document.getElementById('musicHeartBtn');
 				const audio = document.getElementById('bgAudio');
 				if(btn && audio){
