@@ -142,6 +142,13 @@ opacity:0;
 }
 }
 
+@keyframes fall{
+to{
+transform:translateY(100vh) rotate(360deg);
+opacity:0;
+}
+}
+
 .confetti{
 position:fixed;
 width:10px;
@@ -149,10 +156,149 @@ height:10px;
 pointer-events:none;
 }
 
+.music-player{
+background:rgba(214,51,132,0.1);
+border-radius:15px;
+padding:15px;
+margin:20px 0;
+display:flex;
+align-items:center;
+gap:10px;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+.music-player audio{
+width:100%;
+max-width:400px;
+margin:0;
+}
+
+.slideshow-container{
+position:relative;
+max-width:700px;
+margin:auto;
+background:white;
+border-radius:15px;
+overflow:hidden;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+.slide{
+display:none;
+width:100%;
+text-align:center;
+padding:20px;
+}
+
+.slide.active{
+display:block;
+animation:fadeIn 0.5s;
+}
+
+@keyframes fadeIn{
+from{opacity:0;}
+to{opacity:1;}
+}
+
+.slide img{
+width:100%;
+max-height:500px;
+object-fit:cover;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+.slide-caption{
+font-style:italic;
+color:#666;
+margin:15px 0;
+font-size:16px;
+}
+
+.slide-number{
+text-align:center;
+color:#d63384;
+font-size:14px;
+margin-top:10px;
+}
+
+.prev, .next{
+cursor:pointer;
+position:absolute;
+top:50%;
+width:auto;
+margin-top:-22px;
+padding:16px;
+color:white;
+background:rgba(214,51,132,0.7);
+font-weight:bold;
+font-size:18px;
+transition:0.3s ease;
+border-radius:3px;
+user-select:none;
+}
+
+.next{
+right:0;
+}
+
+.prev{
+left:0;
+}
+
+.prev:hover, .next:hover{
+background:rgba(214,51,132,1);
+}
+
+.letter-section{
+background:linear-gradient(135deg, rgba(255,182,193,0.2) 0%, rgba(221,160,221,0.2) 100%);
+border-left:5px solid #d63384;
+padding:30px;
+margin:20px 0;
+border-radius:10px;
+}
+
+.letter-header{
+font-size:24px;
+color:#d63384;
+margin-bottom:20px;
+font-weight:bold;
+}
+
+.letter-content{
+text-align:left;
+line-height:2;
+font-size:18px;
+color:#333;
+margin:20px 0;
+}
+
+.letter-content p{
+margin:15px 0;
+}
+
+.letter-signature{
+text-align:right;
+font-style:italic;
+margin-top:30px;
+color:#d63384;
+font-size:16px;
+white-space:pre-line;
+}
+
 </style>
 </head>
 
 <body>
+
+<div class="music-player">
+<label>🎵 Background Music:</label>
+<audio controls autoplay loop>
+<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+</div>
 
 <section class="card">
 
@@ -210,34 +356,87 @@ I don't promise a perfect love… but I promise a real one, where I choose you e
 
 </section>
 
-<section class="card gallery">
+<section class="card">
+<h2>Our Memories 📸</h2>
 
-<h2>Our Memories</h2>
-
+<div class="slideshow-container">
+<div class="slide active">
 <img src="https://picsum.photos/700/500?1">
-<div class="caption">A quiet prayer, and a peaceful day with you.</div>
+<div class="slide-caption">A quiet prayer, and a peaceful day with you.</div>
+</div>
 
+<div class="slide">
 <img src="https://picsum.photos/700/500?2">
-<div class="caption">No special occasion… just a day that became special because it was with you.</div>
+<div class="slide-caption">No special occasion… just a day that became special because it was with you.</div>
+</div>
 
+<div class="slide">
 <img src="https://picsum.photos/700/500?3">
-<div class="caption">One of the proudest days of my life — and you were part of it.</div>
+<div class="slide-caption">One of the proudest days of my life — and you were part of it.</div>
+</div>
 
+<div class="slide">
 <img src="https://picsum.photos/700/500?4">
-<div class="caption">The first time you saw me in a saree… I still remember your reaction.</div>
+<div class="slide-caption">The first time you saw me in a saree… I still remember your reaction.</div>
+</div>
 
+<div class="slide">
 <img src="https://picsum.photos/700/500?5">
-<div class="caption">Us — in all our simple, ordinary, and meaningful moments.</div>
+<div class="slide-caption">Us — in all our simple, ordinary, and meaningful moments.</div>
+</div>
 
-<audio controls>
-<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-</audio>
+<a class="prev" onclick="changeSlide(-1)">❮</a>
+<a class="next" onclick="changeSlide(1)">❯</a>
 
+<div class="slide-number">
+<span id="slide-counter">1</span> / 5
+</div>
+</div>
 </section>
+
+<section class="card">
+<h2>A Letter From My Heart ❤️</h2>
+
+<div class="letter-section">
+<div class="letter-header">To Sandeepkumar,</div>
+
+<div class="letter-content">
+<p>The past few days were not easy for us. In my overwhelm I pushed you away, and I even said things about ending what we have. But my heart never truly meant it. I am sorry for hurting you.</p>
+
+<p>What we share didn't happen suddenly. It was built slowly — through years of friendship, patience, understanding, and all the little conversations only we know.</p>
+
+<p>You have seen every version of me — the happy one, the quiet one, the confused one — and you still stayed. That means more to me than I can properly express.</p>
+
+<p>Whenever everything inside me feels heavy and messy, I somehow find my way back to you. Talking to you steadies me and makes me feel like myself again.</p>
+
+<p>Your presence calms me in a way nothing else does. No matter how far my thoughts wander, I return to you… because with you I feel safe, understood, and at peace.</p>
+
+<p>I love you deeply, and I truly value us.</p>
+
+<p style="margin-top:30px; font-style:italic;">
+You are summer, full of light,<br>
+I was winter, cold as night.<br>
+You were the warmth I longed to feel,<br>
+While my heart stayed frozen, hard as steel.<br>
+You stood by me, patient and kind,<br>
+Melting the walls I tried to hide.<br>
+Now I soften where once I froze —<br>
+In your warmth, my heart glows.
+</p>
+</div>
+
+<div class="letter-signature">Forever Yours,
+Souhbarnika 💕</div>
+</div>
+</section>
+
+<section class="card gallery">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
 <script>
+
+let currentSlide = 1;
 
 function createConfetti(){
 const duration = 2000;
@@ -279,6 +478,27 @@ event.target.appendChild(messageDiv);
 setTimeout(() => {
 messageDiv.remove();
 }, 3000);
+}
+
+function changeSlide(n){
+showSlide(currentSlide += n);
+}
+
+function showSlide(n){
+const slides = document.getElementsByClassName("slide");
+if(n > slides.length){
+currentSlide = 1;
+}
+if(n < 1){
+currentSlide = slides.length;
+}
+
+for(let i = 0; i < slides.length; i++){
+slides[i].classList.remove("active");
+}
+
+slides[currentSlide - 1].classList.add("active");
+document.getElementById("slide-counter").textContent = currentSlide;
 }
 
 function yes(){
