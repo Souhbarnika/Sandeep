@@ -84,6 +84,71 @@ margin-top:20px;
 width:100%;
 }
 
+.clickable-hearts{
+position:relative;
+height:80px;
+margin:20px 0;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-wrap:wrap;
+gap:15px;
+}
+
+.heart{
+font-size:40px;
+cursor:pointer;
+transition:transform 0.3s ease, filter 0.3s ease;
+position:relative;
+}
+
+.heart:hover{
+transform:scale(1.3) rotate(15deg);
+filter:drop-shadow(0 0 10px rgba(214,51,132,0.6));
+}
+
+.heart-message{
+position:absolute;
+bottom:60px;
+left:50%;
+transform:translateX(-50%);
+background:#d63384;
+color:white;
+padding:8px 12px;
+border-radius:8px;
+font-size:14px;
+white-space:nowrap;
+opacity:0;
+pointer-events:none;
+animation:popUp 0.5s ease forwards;
+z-index:1000;
+}
+
+@keyframes popUp{
+0%{
+opacity:0;
+transform:translateX(-50%) translateY(20px);
+}
+100%{
+opacity:1;
+transform:translateX(-50%) translateY(0);
+}
+}
+
+@keyframes fall{
+to{
+transform:translateY(100vh) rotate(360deg);
+opacity:0;
+}
+}
+
+.confetti{
+position:fixed;
+width:10px;
+height:10px;
+pointer-events:none;
+}
+
 </style>
 </head>
 
@@ -125,6 +190,14 @@ In your warmth, my heart glows.
 
 </div>
 
+<div class="clickable-hearts">
+<span class="heart" onclick="showMessage(event, 'I miss you')">💕</span>
+<span class="heart" onclick="showMessage(event, 'Forever & always')">💖</span>
+<span class="heart" onclick="showMessage(event, 'My love for you')">❤️</span>
+<span class="heart" onclick="showMessage(event, 'Only you')">💗</span>
+<span class="heart" onclick="showMessage(event, 'Always here')">💝</span>
+</div>
+
 <br>
 
 <button onclick="yes()">I'm here ❤️</button>
@@ -162,11 +235,58 @@ I don't promise a perfect love… but I promise a real one, where I choose you e
 
 </section>
 
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
 <script>
+
+function createConfetti(){
+const duration = 2000;
+const animationEnd = Date.now() + duration;
+
+const defaults = {
+startVelocity: 30,
+spread: 360,
+ticks: 60,
+zIndex: 0
+};
+
+function randomInRange(min, max){
+return Math.random() * (max - min) + min;
+}
+
+const interval = setInterval(function(){
+const timeLeft = animationEnd - Date.now();
+
+if(timeLeft <= 0){
+return clearInterval(interval);
+}
+
+const particleCount = 50 * (timeLeft / duration);
+confetti(Object.assign({}, defaults, {
+particleCount,
+origin: {x: randomInRange(0.1, 0.9), y: Math.random() - 0.2}
+}));
+}, 16);
+}
+
+function showMessage(event, message){
+event.stopPropagation();
+const messageDiv = document.createElement('div');
+messageDiv.className = 'heart-message';
+messageDiv.textContent = message;
+event.target.appendChild(messageDiv);
+
+setTimeout(() => {
+messageDiv.remove();
+}, 3000);
+}
 
 function yes(){
 document.getElementById("success").style.display="block";
-window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+createConfetti();
+setTimeout(() => {
+window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'});
+}, 500);
 }
 
 function no(){
