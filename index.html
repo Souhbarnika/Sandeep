@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For Sandeepkumar</title>
 <style>
+:root{
+	--primary: #ff7ab2; /* bright pink */
+	--secondary: #d63384; /* deep pink */
+	--accent: #7c88ff; /* purple */
+	--card-bg: #ffffff;
+	--muted: #666;
+}
+
 .music-pill{
 	display:flex;
 	justify-content:center;
@@ -56,6 +64,15 @@ white-space:pre-line;
 font-size:17px;
 }
 
+/* background tiny hearts */
+.bg-hearts{ position:fixed; inset:0; pointer-events:none; z-index:0; }
+.bg-hearts .bg-heart{ position:absolute; width:12px; height:12px; transform:rotate(45deg); border-radius:3px; opacity:0.12; }
+.bg-heart::before, .bg-heart::after{ content:''; position:absolute; background:inherit; border-radius:50%; }
+.bg-heart::before{ width:12px; height:12px; top:-6px; left:0; }
+.bg-heart::after{ width:12px; height:12px; left:6px; top:0; }
+.bg-heart.float{ animation:floatAway linear infinite; }
+@keyframes floatAway{ from{ transform:translateY(0) rotate(45deg); opacity:0.12 } to{ transform:translateY(-120vh) rotate(45deg); opacity:0 } }
+
 .card{
 	background:white;
 	border-radius:18px;
@@ -66,6 +83,13 @@ font-size:17px;
 	position:relative;
 	z-index:2;
 }
+
+.music-heart{
+	background: linear-gradient(90deg,var(--primary),var(--secondary));
+	width:64px; height:64px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; border:none; cursor:pointer; box-shadow:0 8px 20px rgba(214,51,132,0.18);
+}
+.music-heart svg{ transform:translateY(2px); }
+.music-heart.playing{ box-shadow:0 12px 34px rgba(214,51,132,0.28); transform:scale(1.06); }
 
 button{
 background:#d63384;
@@ -537,19 +561,25 @@ Sandeepkumar, let me take you on a journey through my heart...
 
 <!-- decorative heart behind the first card -->
 <div class="hero-heart" aria-hidden="true"></div>
+<!-- subtle scattered background hearts -->
+<div class="bg-hearts" aria-hidden="true"></div>
 
 <section class="card">
 
 <h1>I want to say something from my heart…</h1>
 
-	<div class="music-pill" aria-label="background-music">
-		<div class="pill">
-			<audio controls autoplay loop>
+		<!-- compact heart music control (toggles hidden audio) -->
+		<div class="music-pill" aria-label="background-music">
+			<button id="musicHeartBtn" class="music-heart" aria-label="play background music" title="Play / Pause">
+				<svg width="42" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+					<path d="M12 21s-7-4.35-9.5-7.5C-0.2 8.9 4 4 7.5 6.5 9 7.8 12 10 12 10s3-2.2 4.5-3.5C20 4 24.2 8.9 21.5 13.5 19 16.65 12 21 12 21z" fill="white" />
+				</svg>
+			</button>
+			<!-- hidden audio element -->
+			<audio id="bgAudio" preload="auto">
 				<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
-				Your browser does not support the audio element.
 			</audio>
 		</div>
-	</div>
 
 <p class="subtitle">
 Some feelings don't appear suddenly — they grow quietly until they begin to feel like home.
@@ -813,6 +843,48 @@ window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'});
 function no(){
 alert("Take your time. I will still be here.");
 }
+
+// Background hearts generator
+function generateBackgroundHearts(count = 24){
+	const container = document.querySelector('.bg-hearts');
+	if(!container) return;
+	const colors = [getComputedStyle(document.documentElement).getPropertyValue('--primary').trim(), getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim(), getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()];
+	for(let i=0;i<count;i++){
+		const el = document.createElement('div');
+		el.className = 'bg-heart';
+		const size = 8 + Math.floor(Math.random()*20);
+		el.style.width = `${size}px`;
+		el.style.height = `${size}px`;
+		const color = colors[Math.floor(Math.random()*colors.length)] || '#ff7ab2';
+		el.style.background = color;
+		el.style.left = Math.random()*100 + 'vw';
+		el.style.top = Math.random()*120 + 'vh';
+		el.style.opacity = (0.06 + Math.random()*0.12).toString();
+		el.style.transform = 'rotate(45deg)';
+		el.style.transition = 'transform 1s linear';
+		const dur = 10 + Math.random()*30;
+		el.style.animationDuration = `${dur}s`;
+		el.classList.add('float');
+		container.appendChild(el);
+	}
+}
+
+// Music heart control
+document.addEventListener('DOMContentLoaded', ()=>{
+	generateBackgroundHearts(28);
+	const btn = document.getElementById('musicHeartBtn');
+	const audio = document.getElementById('bgAudio');
+	if(btn && audio){
+		btn.addEventListener('click', ()=>{
+			if(audio.paused){
+				audio.play();
+				btn.classList.add('playing');
+			} else { audio.pause(); btn.classList.remove('playing'); }
+		});
+		// pause audio when leaving the page
+		window.addEventListener('pagehide', ()=> audio.pause());
+	}
+});
 
 </script>
 
