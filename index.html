@@ -586,10 +586,8 @@ Sandeepkumar, let me take you on a journey through my heart...
 					<path d="M12 21s-7-4.35-9.5-7.5C-0.2 8.9 4 4 7.5 6.5 9 7.8 12 10 12 10s3-2.2 4.5-3.5C20 4 24.2 8.9 21.5 13.5 19 16.65 12 21 12 21z" fill="white" />
 				</svg>
 			</button>
-			<!-- hidden audio element -->
-			<audio id="bgAudio" preload="auto">
-				<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
-			</audio>
+			<!-- YouTube player (hidden) -->
+			<div id="ytPlayer" style="width:0;height:0;overflow:hidden;" aria-hidden="true"></div>
 
 			<div class="audio-controls" aria-hidden="false">
 				<button id="playSmall" class="play-small" aria-label="play pause">
@@ -896,8 +894,9 @@ function generateBackgroundHearts(count = 24){
 // Music heart control
 document.addEventListener('DOMContentLoaded', ()=>{
 	generateBackgroundHearts(28);
-	const btn = document.getElementById('musicHeartBtn');
-	const audio = document.getElementById('bgAudio');
+				const btn = document.getElementById('musicHeartBtn');
+				let player = null;
+				const ytVideoId = '_6i4jndlkO0'; // video id from provided YouTube URL
 	if(btn && audio){
 		const playSmall = document.getElementById('playSmall');
 		const progress = document.getElementById('audioProgress');
@@ -905,44 +904,77 @@ document.addEventListener('DOMContentLoaded', ()=>{
 		const timeCurrent = document.getElementById('timeCurrent');
 		const timeTotal = document.getElementById('timeTotal');
 
-		function formatTime(sec){
+					function formatTime(sec){
 			if(!isFinite(sec)) return '0:00';
 			const m = Math.floor(sec/60); const s = Math.floor(sec%60); return `${m}:${s.toString().padStart(2,'0')}`;
 		}
+					// load YouTube IFrame API
+					const tag = document.createElement('script');
+					tag.src = "https://www.youtube.com/iframe_api";
+					document.head.appendChild(tag);
 
-		// sync play/pause UI
-		function updatePlayState(){
-			if(!audio.paused){ btn.classList.add('playing'); playSmall.classList.add('playing'); }
-			else { btn.classList.remove('playing'); playSmall.classList.remove('playing'); }
-		}
+					// helper to check player state
+					function isPlaying(){
+						if(!player || typeof player.getPlayerState !== 'function') return false;
+						return player.getPlayerState() === YT.PlayerState.PLAYING;
+					}
 
-		btn.addEventListener('click', ()=>{
-			if(audio.paused){ audio.play(); } else { audio.pause(); }
-			updatePlayState();
-		});
+					function updatePlayState(){
+						if(isPlaying()){ btn.classList.add('playing'); playSmall.classList.add('playing'); }
+						else { btn.classList.remove('playing'); playSmall.classList.remove('playing'); }
+					}
 
-		playSmall.addEventListener('click', ()=>{ if(audio.paused){ audio.play(); } else audio.pause(); updatePlayState(); });
+					// poller for time updates
+					let ytPoll = null;
 
-		audio.addEventListener('play', updatePlayState);
-		audio.addEventListener('pause', updatePlayState);
+					window.onYouTubeIframeAPIReady = function(){
+						player = new YT.Player('ytPlayer', {
+							videoId: ytVideoId,
+							playerVars: { 'controls': 0, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 },
+							events: {
+								onReady: function(){
+									// attempt to set total time
+									setTimeout(()=>{ if(player && player.getDuration) timeTotal.textContent = formatTime(player.getDuration()); }, 800);
+								},
+								onStateChange: function(e){
+									updatePlayState();
+									if(e.data === YT.PlayerState.PLAYING){
+										if(ytPoll) clearInterval(ytPoll);
+										ytPoll = setInterval(()=>{
+											const dur = player.getDuration() || 0;
+											const cur = player.getCurrentTime() || 0;
+											const pct = dur ? (cur / dur) * 100 : 0;
+											progressFilled.style.width = pct + '%';
+											timeCurrent.textContent = formatTime(cur);
+										}, 250);
+									} else {
+										if(ytPoll) clearInterval(ytPoll);
+									}
+								}
+							}
+						});
+					};
 
-		audio.addEventListener('loadedmetadata', ()=>{ timeTotal.textContent = formatTime(audio.duration); });
+					// button handlers
+					btn.addEventListener('click', ()=>{
+						if(!player) return;
+						if(isPlaying()) player.pauseVideo(); else player.playVideo();
+						updatePlayState();
+					});
 
-		audio.addEventListener('timeupdate', ()=>{
-			const pct = (audio.currentTime / audio.duration) * 100 || 0;
-			progressFilled.style.width = pct + '%';
-			timeCurrent.textContent = formatTime(audio.currentTime);
-		});
+					playSmall.addEventListener('click', ()=>{ if(!player) return; if(isPlaying()) player.pauseVideo(); else player.playVideo(); updatePlayState(); });
 
-		// seek
-		progress.addEventListener('click', (e)=>{
-			const rect = progress.getBoundingClientRect();
-			const dx = e.clientX - rect.left; const pct = dx / rect.width;
-			audio.currentTime = pct * audio.duration;
-		});
+					// seek
+					progress.addEventListener('click', (e)=>{
+						if(!player) return;
+						const rect = progress.getBoundingClientRect();
+						const dx = e.clientX - rect.left; const pct = dx / rect.width;
+						const dur = player.getDuration() || 0;
+						player.seekTo(pct * dur, true);
+					});
 
-		// pause audio when leaving the page
-		window.addEventListener('pagehide', ()=> audio.pause());
+					// pause when leaving
+					window.addEventListener('pagehide', ()=>{ if(player) player.pauseVideo(); });
 	}
 });
 
