@@ -379,7 +379,7 @@ padding:15px 40px;
 border-radius:30px;
 font-size:18px;
 cursor:pointer;
-transition:all 0.3s ease;
+transition:all 0.5s ease;
 flex:1;
 }
 
@@ -635,6 +635,19 @@ function sayYes(){
 // Hide Valentine section and popup
 document.getElementById("valentineSection").style.display = "none";
 document.getElementById("surePopup").classList.remove("active");
+// Reset popup for next time
+noClickCount = 0;
+const yesButton = document.querySelector(".popup-yes");
+const noButton = document.getElementById("noButton");
+const popupContent = document.querySelector(".popup-content");
+yesButton.style.fontSize = "18px";
+yesButton.style.padding = "15px 40px";
+noButton.style.fontSize = "18px";
+noButton.style.padding = "15px 40px";
+noButton.style.opacity = "1";
+noButton.style.visibility = "visible";
+popupContent.style.transform = "scale(1)";
+document.getElementById("popupText").textContent = "Are you SURE??";
 // Show main content
 document.getElementById("mainContent").style.display = "block";
 createConfetti();
@@ -648,27 +661,57 @@ function noButtonClicked(){
 noClickCount++;
 const popup = document.getElementById("surePopup");
 const popupContent = popup.querySelector(".popup-content");
+const yesButton = document.querySelector(".popup-yes");
 const noButton = document.getElementById("noButton");
 
 popup.classList.add("active");
 
+// Base sizes
+let popupScale = 1;
+let yesSize = 18;
+let noPadding = 15;
+let noOpacity = 1;
+
+// Grow popup, YES button, and shrink NO button with each click
 if(noClickCount === 1){
-// Show popup
-popupContent.style.transform = "scale(1)";
+document.getElementById("popupText").textContent = "But will you at least see this for me? 💕";
+popupScale = 1.1;
+yesSize = 20;
+noPadding = 12;
 } else if(noClickCount === 2){
-// Increase size and disable No button
-popupContent.style.transform = "scale(1.3)";
-document.getElementById("popupText").textContent = "ARE YOU SUREEEEE???";
-noButton.style.display = "none";
+document.getElementById("popupText").textContent = "I prepared something really special... 🎁";
+popupScale = 1.3;
+yesSize = 22;
+noPadding = 8;
+noOpacity = 0.8;
 } else if(noClickCount === 3){
-// Even bigger
-popupContent.style.transform = "scale(1.6)";
-document.getElementById("popupText").textContent = "REALLY?? YOU'RE BREAKING MY HEART!! 💔";
-} else if(noClickCount >= 4){
-// Maximum size
-popupContent.style.transform = "scale(2)";
-document.getElementById("popupText").textContent = "JUST SAY YES ALREADY!! 😭";
+document.getElementById("popupText").textContent = "Pretty please? Just one look? 👉❤️";
+popupScale = 1.5;
+yesSize = 24;
+noPadding = 4;
+noOpacity = 0.6;
+} else if(noClickCount === 4){
+document.getElementById("popupText").textContent = "I really want to show you... 😭💕";
+popupScale = 1.7;
+yesSize = 26;
+noPadding = 2;
+noOpacity = 0.4;
+} else if(noClickCount >= 5){
+document.getElementById("popupText").textContent = "You're going to love it, I promise! ❤️";
+popupScale = 2;
+yesSize = 28;
+noPadding = 0;
+noOpacity = 0.2;
+noButton.style.visibility = "hidden";
 }
+
+// Apply transformations
+popupContent.style.transform = `scale(${popupScale})`;
+yesButton.style.fontSize = `${yesSize}px`;
+yesButton.style.padding = `18px ${30 + (noClickCount * 5)}px`;
+noButton.style.fontSize = `${18 - noClickCount}px`;
+noButton.style.padding = `15px ${Math.max(5, noPadding)}px`;
+noButton.style.opacity = noOpacity;
 }
 
 function yes(){
