@@ -659,39 +659,10 @@ Sandeepkumar, let me take you on a journey through my heart...
 <section class="card">
 <h2>📸 Our Memories</h2>
 
-<div class="slideshow-container">
-<div class="slide active">
-<img src="https://picsum.photos/700/500?1">
-<div class="slide-caption">A quiet prayer, and a peaceful day with you.</div>
-</div>
-
-<div class="slide">
-<img src="https://picsum.photos/700/500?2">
-<div class="slide-caption">No special occasion… just a day that became special because it was with you.</div>
-</div>
-
-<div class="slide">
-<img src="https://picsum.photos/700/500?3">
-<div class="slide-caption">One of the proudest days of my life — and you were part of it.</div>
-</div>
-
-<div class="slide">
-<img src="https://picsum.photos/700/500?4">
-<div class="slide-caption">The first time you saw me in a saree… I still remember your reaction.</div>
-</div>
-
-<div class="slide">
-<img src="https://picsum.photos/700/500?5">
-<div class="slide-caption">Us — in all our simple, ordinary, and meaningful moments.</div>
-</div>
-
-<a class="prev" onclick="changeSlide(-1)">❮</a>
-<a class="next" onclick="changeSlide(1)">❯</a>
-
-<div class="slide-number">
-<span id="slide-counter">1</span> / 5
-</div>
-</div>
+<img src="https://picsum.photos/700/500?1" style="width:100%; border-radius:15px; margin-top:15px;">
+<p style="text-align:center; font-style:italic; color:#666; margin-top:15px; font-size:18px;">
+<strong>Kelaamalae kayil vantha Katti thangam neeyae</strong> ❤️
+</p>
 </section>
 
 <section class="card">
@@ -744,7 +715,6 @@ I don't promise a perfect love… but I promise a real one, where I choose you e
 
 <script>
 
-let currentSlide = 1;
 let noClickCount = 0;
 
 function createConfetti(){
@@ -787,27 +757,6 @@ event.target.appendChild(messageDiv);
 setTimeout(() => {
 messageDiv.remove();
 }, 3000);
-}
-
-function changeSlide(n){
-showSlide(currentSlide += n);
-}
-
-function showSlide(n){
-const slides = document.getElementsByClassName("slide");
-if(n > slides.length){
-currentSlide = 1;
-}
-if(n < 1){
-currentSlide = slides.length;
-}
-
-for(let i = 0; i < slides.length; i++){
-slides[i].classList.remove("active");
-}
-
-slides[currentSlide - 1].classList.add("active");
-document.getElementById("slide-counter").textContent = currentSlide;
 }
 
 function sayYes(){
