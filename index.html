@@ -46,7 +46,10 @@
 .progress-filled{ width:0%; height:100%; background:linear-gradient(90deg,var(--primary),var(--secondary)); border-radius:10px 0 0 10px; }
 .time{ font-size:13px; color:var(--muted); min-width:48px; text-align:center; }
 .play-small{ background:transparent; border:none; width:36px; height:36px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
-.play-small svg{ fill:white; width:18px; height:18px; }
+ .play-small svg{ fill:white; width:18px; height:18px; }
+ .play-small svg { transition: transform 0.12s ease; transform-origin:50% 50%; }
+ .play-small.playing svg { animation: beat 0.8s cubic-bezier(.2,.8,.2,1) infinite; color: #ff79c6; filter: drop-shadow(0 6px 10px rgba(255,121,198,0.12)); }
+ @keyframes beat { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 60% { transform: scale(0.98); } 100% { transform: scale(1); } }
 
 .hero-heart{
 	position:absolute;
@@ -589,7 +592,11 @@ Sandeepkumar, let me take you on a journey through my heart...
 			</audio>
 
 			<div class="audio-controls" aria-hidden="false">
-				<button id="playSmall" class="play-small" aria-label="play pause"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg></button>
+				<button id="playSmall" class="play-small" aria-label="play pause">
+					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+						<path d="M12 21s-7-4.35-9.5-7.5C-0.2 8.9 4 4 7.5 6.5 9 7.8 12 10 12 10s3-2.2 4.5-3.5C20 4 24.2 8.9 21.5 13.5 19 16.65 12 21 12 21z" fill="currentColor" />
+					</svg>
+				</button>
 				<div class="progress" id="audioProgress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
 					<div class="progress-filled" id="progressFilled"></div>
 				</div>
