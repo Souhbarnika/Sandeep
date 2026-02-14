@@ -287,10 +287,136 @@ font-size:16px;
 white-space:pre-line;
 }
 
+.hidden-section{
+display:none;
+}
+
+.visible-section{
+display:block;
+}
+
+#valentineSection{
+display:flex;
+}
+
+#mainContent{
+display:none;
+}
+
+.popup-overlay{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+z-index:2000;
+justify-content:center;
+align-items:center;
+}
+
+.popup-overlay.active{
+display:flex;
+}
+
+.popup-content{
+background:white;
+border-radius:20px;
+padding:40px 30px;
+text-align:center;
+box-shadow:0 10px 40px rgba(0,0,0,0.3);
+max-width:500px;
+animation:popupAppear 0.5s ease;
+}
+
+@keyframes popupAppear{
+from{
+transform:scale(0.7);
+opacity:0;
+}
+to{
+transform:scale(1);
+opacity:1;
+}
+}
+
+.popup-content h2{
+color:#d63384;
+font-size:28px;
+margin-bottom:30px;
+}
+
+.popup-buttons{
+display:flex;
+gap:15px;
+justify-content:center;
+margin-top:30px;
+}
+
+.popup-yes{
+background:#d63384;
+color:white;
+border:none;
+padding:15px 40px;
+border-radius:30px;
+font-size:18px;
+cursor:pointer;
+transition:all 0.3s ease;
+flex:1;
+}
+
+.popup-yes:hover{
+transform:scale(1.05);
+background:#c72a78;
+}
+
+.popup-no{
+background:#ff6b9d;
+color:white;
+border:none;
+padding:15px 40px;
+border-radius:30px;
+font-size:18px;
+cursor:pointer;
+transition:all 0.3s ease;
+flex:1;
+}
+
+.popup-no:hover{
+transform:scale(1.05);
+}
+
 </style>
 </head>
 
 <body>
+
+<!-- POPUP FOR "ARE YOU SURE?" -->
+<div class="popup-overlay" id="surePopup">
+<div class="popup-content">
+<h2 id="popupText">Are you SURE??</h2>
+<div class="popup-buttons">
+<button class="popup-yes" onclick="sayYes()">YES! ❤️</button>
+<button class="popup-no" id="noButton" onclick="noButtonClicked()">NO 💔</button>
+</div>
+</div>
+</div>
+
+<!-- INITIAL VALENTINE QUESTION PAGE -->
+<section class="card" id="valentineSection">
+<h1>Will you be my Valentine? 💕</h1>
+<p class="subtitle">
+Sandeepkumar, let me take you on a journey through my heart...
+</p>
+<div style="margin-top:40px;">
+<button onclick="sayYes()" style="padding:18px 30px; font-size:24px;">YES ❤️</button>
+<button onclick="noButtonClicked()" style="padding:18px 30px; font-size:24px;">NO 💔</button>
+</div>
+</section>
+
+<!-- MAIN CONTENT (Hidden initially) -->
+<div id="mainContent">
 
 <div class="music-player">
 <label>🎵 Background Music:</label>
@@ -431,12 +557,16 @@ Souhbarnika 💕</div>
 </section>
 
 <section class="card gallery">
+</section>
+
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
 <script>
 
 let currentSlide = 1;
+let noClickCount = 0;
 
 function createConfetti(){
 const duration = 2000;
@@ -499,6 +629,46 @@ slides[i].classList.remove("active");
 
 slides[currentSlide - 1].classList.add("active");
 document.getElementById("slide-counter").textContent = currentSlide;
+}
+
+function sayYes(){
+// Hide Valentine section and popup
+document.getElementById("valentineSection").style.display = "none";
+document.getElementById("surePopup").classList.remove("active");
+// Show main content
+document.getElementById("mainContent").style.display = "block";
+createConfetti();
+
+setTimeout(() => {
+window.scrollTo({top: 0, behavior: 'smooth'});
+}, 300);
+}
+
+function noButtonClicked(){
+noClickCount++;
+const popup = document.getElementById("surePopup");
+const popupContent = popup.querySelector(".popup-content");
+const noButton = document.getElementById("noButton");
+
+popup.classList.add("active");
+
+if(noClickCount === 1){
+// Show popup
+popupContent.style.transform = "scale(1)";
+} else if(noClickCount === 2){
+// Increase size and disable No button
+popupContent.style.transform = "scale(1.3)";
+document.getElementById("popupText").textContent = "ARE YOU SUREEEEE???";
+noButton.style.display = "none";
+} else if(noClickCount === 3){
+// Even bigger
+popupContent.style.transform = "scale(1.6)";
+document.getElementById("popupText").textContent = "REALLY?? YOU'RE BREAKING MY HEART!! 💔";
+} else if(noClickCount >= 4){
+// Maximum size
+popupContent.style.transform = "scale(2)";
+document.getElementById("popupText").textContent = "JUST SAY YES ALREADY!! 😭";
+}
 }
 
 function yes(){
